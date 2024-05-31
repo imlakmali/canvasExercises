@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+
+    
+    <style>
+      * {
+        margin: 0px;
+        padding-left: 0px;
+        box-sizing: border-box;
+      }
+      .mainContainer {
+        height: 100vh;
+        width: 100vw;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        margin: 10px;
+      }
+      .container {
+        height: 100vh;
+        width: 100vw;
+        margin: 10px;
+        padding: 10px;
+      }
+
+      #sourceCanvas {
+        border: 2px solid rgb(19, 18, 18);
+      }
+
+      #targetCanvas {
+        border: 2px solid rgb(4, 55, 55);
+      }
+    </style>
+
+  </head>
+
+  <body>
+    <div class="mainContainer">
+
+      <div class="inputImage">
+        <input type="file" id="fileInput" accept="image" />
+      </div>
+
+      <div class="container">
+
+        <div class="canvasContainer">
+          <canvas id="sourceCanvas"></canvas>
+          <canvas id="targetCanvas"></canvas>
+        </div>
+
+      </div>
+
+    </div>
+
+    <script>
+
+      function handlFileSelect(event) {
+        const file = event.target.files[0];
+
+        if (file) {
+          const reader = new FileReader();
+          reader.readAsDataURL(file);
+
+          reader.onload = function () {
+            const img = new Image();
+            img.src = reader.result;
+
+            img.onload = function () {
+              const sourceCanvas = document.getElementById("sourceCanvas");
+              sourceCanvas.width = img.width;
+              sourceCanvas.height = img.height;
+              const sourceCtx = sourceCanvas.getContext("2d");
+              sourceCtx.drawImage(img, 0, 0, img.width, img.height);
+
+              const targetCanvas = document.getElementById("targetCanvas");
+              targetCanvas.width = img.width * 2;
+              targetCanvas.height = img.height * 2;
+              const targetCtx = targetCanvas.getContext("2d");
+              const imageData = sourceCtx.getImageData(0,0,img.width,img.height);
+
+              for (let i = 0; i < imageData.data.length; i += 4) {
+                //  I can chenged the color.
+                imageData.data[i];
+                imageData.data[i + 1];
+                imageData.data[i + 2];
+              }
+
+              targetCtx.putImageData(imageData, img.width / 2, img.height / 2);
+            };
+          };
+        }
+      }
+      
+      document.getElementById("fileInput").addEventListener("change", handlFileSelect);
+    </script>
+  </body>
+</html>
